@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import Card from '../../components/Card';
+import Pagination from '../../components/Pagination';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import styled from "styled-components";
 
 const QuestionsContainer = styled.div`
@@ -14,35 +16,16 @@ const CardLink = styled.a`
   text-decoration: none;
 `
 
-function Questions(){
-
-  const [ loading, setLoading ] = useState(false);
-  const [ questions, setQuestions ] = useState([]);
-
-  useEffect(() => {
-    async function fetchData(){
-      const data = await fetch('https://api.stackexchange.com/2.2/questions?order=desc&sort=hot&tagged=reactjs&site=stackoverflow');
-      const result = await data.json();
-
-      if (result){
-        setQuestions(result.items);
-        setLoading(false);
-      }
-    }
-    fetchData();
-  }, []);
-
+function Questions({ questions, hasMore, page }){
   return (
-    <QuestionsContainer>
-      <h2>Questions</h2>
-      { loading ? (
-        <span>Loading....</span>
-      ) : (
+    <>
+      <QuestionsContainer>
+        <h2>Questions</h2>
         <div>
           { questions.map((question) => (
             <Link
-              key={question.question_id}
               href={`/questions/${question.question_id}`}
+              key={question.question_id}
               passHref
             >
               <CardLink>
@@ -56,9 +39,29 @@ function Questions(){
             </Link>  
           ))}
         </div>
-      )}
-    </QuestionsContainer>
+        <Pagination currentPage={ parseInt(page) || 1} hasMore={ hasMore} />  
+      </QuestionsContainer>
+    </>
   );
+}
+
+export async function getServerSideProps(context) {
+  const { page } = context.query;
+
+  const data = await fetch(
+    `https://api.stackexchange.com/2.2/questions?${
+      page ? `page=${page}&` : ''
+    }order=desc&sort=hot&tagged=reactjs&site=stackoverflow`,
+  );
+  const result = await data.json();
+
+  return {
+    props: {
+      questions: result.items,
+      hasMore: result.has_more,
+      page: page || 1,
+    },
+  };
 }
 
 export default Questions;

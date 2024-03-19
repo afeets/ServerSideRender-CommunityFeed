@@ -39,11 +39,13 @@ function QuestionDetail() {
       { loading ? (
         <span>Loading...</span>
       ) : (
-        <Card 
-          title = { question.title }
-          views = { question.view_count }
-          answers = { question.answer_count }
-        />
+        <>
+          <Card 
+            title = { question.title }
+            views = { question.view_count }
+            answers = { question.answer_count }
+          />
+        </>
       )}
     </QuestionDetailContainer>
   )
