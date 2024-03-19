@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
 import Card from '../../components/Card';
 import Pagination from '../../components/Pagination';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import styled from "styled-components";
+import Head from 'next/head';
+
 
 const QuestionsContainer = styled.div`
   display: flex;
@@ -19,10 +19,13 @@ const CardLink = styled.a`
 function Questions({ questions, hasMore, page }){
   return (
     <>
+      <Head>
+        <title>Questions</title>
+      </Head>
       <QuestionsContainer>
         <h2>Questions</h2>
         <div>
-          { questions.map((question) => (
+          { questions && questions.map((question) => (
             <Link
               href={`/questions/${question.question_id}`}
               key={question.question_id}

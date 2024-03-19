@@ -17,7 +17,7 @@ const Title = styled.h1`
   pointer-events: none;
 `;
 
-function Header(){
+const Header = () => {
   return (
     <>
       <Head>
@@ -31,7 +31,7 @@ function Header(){
         <Title>Community Feed</Title>
       </HeaderWrapper>
     </>
-  )
+  );
 }
 
 export default Header;
